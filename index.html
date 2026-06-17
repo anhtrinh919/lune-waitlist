@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lune — What you've always wanted. Built in days.</title>
+<meta name="description" content="Lune builds the small tool you've always wished for — live and ready in days. 5 free pilot builds open now.">
+<meta property="og:title" content="Lune — What you've always wanted. Built in days.">
+<meta property="og:description" content="Describe a daily headache. Get a working tool back in days. 5 free pilot builds open now.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Figtree:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lune-night:#1a2138; --lune-night-2:#222a45;
+  --lune-night-line:rgba(180,196,238,.14);
+  --lune-paper:#eceef4; --lune-surface:#fbfbfe; --lune-surface-2:#f1f2f8;
+  --lune-ink:#1f2740; --lune-body:#555d76; --lune-muted:#858ca3; --lune-faint:#9aa0b4;
+  --lune-on-night:#eef0f8; --lune-on-night-soft:#b7bed4; --lune-on-night-faint:#7e87a4;
+  --lune-moon:#7b86d6; --lune-moon-ink:#5e69bf; --lune-moon-bright:#a4adea;
+  --lune-gold:#cba35e; --lune-gold-ink:#b08c45; --lune-snag:#b27a5c;
+  --lune-line:#dde0ea; --lune-line-strong:#d2d6e4;
+  --lune-font-display:'Source Serif 4',Georgia,serif;
+  --lune-font-ui:'Figtree',system-ui,-apple-system,sans-serif;
+  --lune-font-mono:'Spline Sans Mono',ui-monospace,monospace;
+  --lune-radius-md:14px; --lune-radius-lg:18px; --lune-radius-xl:24px; --lune-radius-pill:999px;
+  --lune-shadow-lg:0 30px 72px rgba(10,14,34,.40);
+  --lune-glow-moon:0 0 40px rgba(123,134,214,.30);
+  --lune-glow-gold:0 0 32px rgba(203,163,94,.26);
+  --lune-ease:cubic-bezier(.2,.6,.2,1); --lune-dur-base:200ms;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:#151b2e;}
+::selection{background:rgba(123,134,214,.32);}
+body{font-family:var(--lune-font-ui);}
+
+@keyframes luneRise{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+@keyframes luneTwinkle{0%,100%{opacity:.25;}50%{opacity:.9;}}
+@keyframes luneFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@keyframes luneFade{from{opacity:0;transform:translateY(10px) scale(.99);}to{opacity:1;transform:none;}}
+@keyframes luneMoonSpin{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
+@keyframes luneMoonGlow{0%,100%{opacity:.55;}50%{opacity:1;}}
+@media (prefers-reduced-motion:reduce){
+  [data-rise],[data-twinkle],[data-float]{animation:none!important;opacity:1!important;transform:none!important;}
+  .lune-moon-spin,.lune-moon-glow{animation:none!important;}
+}
+
+.stage{position:relative;min-height:100vh;width:100%;overflow:hidden;
+  background:radial-gradient(1200px 800px at 80% -10%,#2b3457 0%,#1d2540 46%,#151b2e 100%);}
+.wrap{position:relative;max-width:1240px;margin:0 auto;padding:38px 48px 48px;min-height:100vh;display:flex;flex-direction:column;}
+
+.starA,.starB{position:absolute;inset:0;pointer-events:none;}
+.starA{animation:luneTwinkle 7s ease-in-out infinite;background:
+  radial-gradient(1.6px 1.6px at 12% 22%,rgba(220,226,250,.7),transparent),
+  radial-gradient(1.4px 1.4px at 28% 64%,rgba(220,226,250,.5),transparent),
+  radial-gradient(1.2px 1.2px at 47% 14%,rgba(220,226,250,.55),transparent),
+  radial-gradient(1px 1px at 63% 40%,rgba(220,226,250,.4),transparent),
+  radial-gradient(1.5px 1.5px at 84% 70%,rgba(220,226,250,.45),transparent),
+  radial-gradient(1px 1px at 92% 30%,rgba(220,226,250,.4),transparent);}
+.starB{animation:luneTwinkle 5.5s ease-in-out infinite 1.5s;background:
+  radial-gradient(1px 1px at 20% 80%,rgba(220,226,250,.5),transparent),
+  radial-gradient(1.3px 1.3px at 55% 78%,rgba(220,226,250,.4),transparent),
+  radial-gradient(1px 1px at 73% 12%,rgba(220,226,250,.5),transparent),
+  radial-gradient(1.2px 1.2px at 38% 36%,rgba(220,226,250,.42),transparent);}
+
+.moon-desk{position:absolute;top:-56px;right:-56px;opacity:.97;pointer-events:none;z-index:0;animation:luneFloat 15s ease-in-out infinite;}
+.moon-mob{display:none;position:absolute;top:-28px;right:-34px;opacity:.96;pointer-events:none;z-index:0;animation:luneFloat 14s ease-in-out infinite;}
+
+.hdr{position:relative;z-index:2;animation:luneRise .7s var(--lune-ease) both;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.brand{display:flex;align-items:center;gap:11px;}
+.brand .name{font-family:var(--lune-font-display);font-weight:500;font-size:26px;letter-spacing:-0.015em;color:var(--lune-on-night);}
+.brand .pb{font-family:var(--lune-font-mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--lune-on-night-faint);}
+.hdr-cta{cursor:pointer;font-family:var(--lune-font-ui);font-size:15px;font-weight:600;color:var(--lune-gold);white-space:nowrap;transition:color var(--lune-dur-base) var(--lune-ease);background:none;border:none;}
+.hdr-cta:hover{color:var(--lune-gold-ink);}
+
+.main{position:relative;z-index:1;flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:64px;padding:40px 0;}
+.narrative{flex:1 1 500px;min-width:380px;max-width:640px;}
+.h1{font-family:var(--lune-font-display);font-weight:500;font-size:76px;line-height:1.02;letter-spacing:-0.022em;color:var(--lune-on-night);margin:0;animation:luneRise .7s var(--lune-ease) both .12s;}
+.h1 .gold{color:var(--lune-gold);}
+.explainer{font-family:var(--lune-font-ui);font-size:23px;line-height:1.5;color:var(--lune-on-night-soft);margin:26px 0 0;max-width:560px;animation:luneRise .7s var(--lune-ease) both .2s;}
+.desc{font-family:var(--lune-font-ui);font-size:18px;line-height:1.62;color:var(--lune-on-night-faint);margin:22px 0 0;max-width:540px;animation:luneRise .7s var(--lune-ease) both .26s;}
+
+.offer{margin-top:32px;max-width:540px;padding:22px 24px;border-radius:var(--lune-radius-lg);background:rgba(203,163,94,.08);border:1px solid rgba(203,163,94,.28);box-shadow:var(--lune-glow-gold);animation:luneRise .7s var(--lune-ease) both .34s;}
+.offer .ttl{font-family:var(--lune-font-display);font-weight:600;font-size:24px;color:var(--lune-on-night);letter-spacing:-0.01em;}
+.offer .sub{font-family:var(--lune-font-ui);font-size:16.5px;line-height:1.55;color:var(--lune-on-night-soft);margin-top:7px;}
+
+.trust{display:flex;flex-direction:column;gap:14px;margin-top:34px;animation:luneRise .7s var(--lune-ease) both .42s;}
+.trust .row{display:flex;align-items:baseline;gap:12px;}
+.trust .tick{color:var(--lune-moon-bright);font-size:15px;line-height:1;flex-shrink:0;}
+.trust .txt{font-family:var(--lune-font-ui);font-size:17px;color:var(--lune-on-night-soft);}
+.trust .txt b{font-weight:700;color:var(--lune-on-night);}
+
+.formwrap{position:relative;z-index:2;flex:0 1 440px;min-width:340px;animation:luneRise .8s var(--lune-ease) both .28s;}
+.card{background:var(--lune-surface);border:1px solid var(--lune-line);border-radius:var(--lune-radius-xl);box-shadow:var(--lune-shadow-lg),var(--lune-glow-moon);overflow:hidden;}
+.card-pad{padding:32px;}
+
+.ribbon{display:none;background:rgba(203,163,94,.1);border-bottom:1px solid rgba(203,163,94,.26);padding:12px 22px;align-items:baseline;gap:7px;}
+.ribbon span{font-family:var(--lune-font-ui);font-size:13.5px;line-height:1.4;color:var(--lune-gold-ink);}
+.ribbon b{font-weight:700;}
+
+.kicker{font-family:var(--lune-font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lune-moon);margin-bottom:8px;}
+.cardttl{font-family:var(--lune-font-display);font-weight:600;font-size:23px;letter-spacing:-0.01em;color:var(--lune-ink);}
+.fields{margin-top:22px;display:flex;flex-direction:column;gap:16px;}
+.field label{display:block;font-family:var(--lune-font-ui);font-size:13px;font-weight:600;color:var(--lune-ink);margin-bottom:7px;}
+.field .lblrow{display:flex;justify-content:space-between;align-items:baseline;}
+.field .opt{font-family:var(--lune-font-mono);font-size:10.5px;letter-spacing:.1em;color:var(--lune-faint);font-weight:400;}
+.field input,.field textarea{width:100%;padding:13px 15px;font-family:var(--lune-font-ui);font-size:15px;color:var(--lune-ink);background:var(--lune-surface);border:1.5px solid var(--lune-line-strong);border-radius:var(--lune-radius-md);outline:none;caret-color:var(--lune-moon);transition:border-color var(--lune-dur-base) var(--lune-ease),box-shadow var(--lune-dur-base) var(--lune-ease);}
+.field textarea{line-height:1.5;resize:none;}
+.field input:focus,.field textarea:focus{border-color:var(--lune-moon);box-shadow:0 0 0 3px rgba(123,134,214,.2);}
+
+.nudge{display:none;align-items:center;gap:8px;margin-top:14px;padding-left:2px;}
+.nudge .dot{width:7px;height:7px;border-radius:50%;background:var(--lune-snag);flex-shrink:0;}
+.nudge .msg{font-family:var(--lune-font-ui);font-size:13.5px;color:var(--lune-snag);}
+
+.cta{margin-top:22px;}
+.btn-gold{font-family:var(--lune-font-ui);font-weight:600;font-size:17px;padding:16px 34px;min-height:44px;border-radius:var(--lune-radius-pill);border:1px solid transparent;cursor:pointer;color:#2a2210;background:var(--lune-gold);box-shadow:0 8px 22px rgba(180,140,60,.24);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;line-height:1;outline:none;transition:transform var(--lune-dur-base) var(--lune-ease),box-shadow var(--lune-dur-base) ease,background 120ms ease;}
+.btn-gold:hover{transform:translateY(-2px);background:var(--lune-gold-ink);}
+.btn-gold:disabled{opacity:.55;cursor:default;transform:none;}
+.microcopy{font-family:var(--lune-font-ui);font-size:13px;line-height:1.55;color:var(--lune-muted);margin:16px 0 0;}
+
+.confirm{display:none;animation:luneFade .5s var(--lune-ease) both;text-align:center;padding:14px 6px;}
+.confirm .moonbox{display:flex;justify-content:center;align-items:center;height:72px;margin-bottom:18px;}
+.confirm .ttl{font-family:var(--lune-font-display);font-weight:600;font-size:27px;letter-spacing:-0.01em;color:var(--lune-ink);}
+.confirm .p1{font-family:var(--lune-font-ui);font-size:15.5px;line-height:1.6;color:var(--lune-body);margin:12px 0 0;}
+.confirm .p2{font-family:var(--lune-font-ui);font-size:14px;line-height:1.6;color:var(--lune-muted);margin:10px 0 0;}
+
+.proofrow{display:none;position:relative;z-index:1;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:22px;animation:luneRise .6s var(--lune-ease) both .38s;}
+.proofrow .pi{font-family:var(--lune-font-ui);font-size:14.5px;font-weight:600;color:var(--lune-on-night-soft);}
+.proofrow .sep{color:var(--lune-on-night-faint);font-size:13px;}
+
+.foot{position:relative;z-index:2;animation:luneRise .7s var(--lune-ease) both .5s;padding-top:22px;border-top:1px solid var(--lune-night-line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 28px;}
+.foot .fbrand{display:flex;align-items:center;gap:9px;}
+.foot .fname{font-family:var(--lune-font-display);font-weight:500;font-size:16px;color:var(--lune-on-night-soft);}
+.foot .fpb{font-family:var(--lune-font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--lune-on-night-faint);}
+.foot .ftrust{font-family:var(--lune-font-ui);font-size:13.5px;color:var(--lune-on-night-faint);}
+.foot .fcopy{font-family:var(--lune-font-mono);font-size:10.5px;letter-spacing:.14em;color:var(--lune-on-night-faint);}
+
+.only-mob{display:none;}
+
+@media (max-width:820px){
+  .stage{background:radial-gradient(560px 460px at 92% -4%,#2b3457 0%,#1d2540 52%,#151b2e 100%);}
+  .wrap{padding:22px 20px 36px;}
+  .moon-desk{display:none;}
+  .moon-mob{display:block;}
+  .only-desk{display:none!important;}
+  .hdr{justify-content:flex-start;gap:9px;}
+  .main{flex-direction:column;align-items:stretch;gap:0;padding:0;}
+  .narrative{max-width:none;min-width:0;margin-top:34px;}
+  .h1{font-size:48px;line-height:1.03;}
+  .explainer{font-size:19px;margin:18px 0 0;}
+  .desc{font-size:16px;line-height:1.55;margin:12px 0 0;}
+  .formwrap{margin-top:26px;}
+  .card-pad{padding:22px;}
+  .ribbon{display:flex;}
+  .fields{gap:15px;}
+  .field input,.field textarea{padding:15px;font-size:16px;}
+  .btn-gold{width:100%;justify-content:center;}
+  .cta{display:flex;}
+  .proofrow.only-mob{display:flex;}
+  .foot{flex-direction:column;align-items:center;text-align:center;gap:9px;margin-top:28px;}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="starA" data-twinkle></div>
+  <div class="starB" data-twinkle></div>
+
+  <div class="moon-desk" data-float data-moon data-size="440" data-state="awake" data-onnight="1"></div>
+  <div class="moon-mob" data-float data-moon data-size="172" data-state="awake" data-onnight="1"></div>
+
+  <div class="wrap">
+    <header class="hdr">
+      <div class="brand">
+        <div data-moon data-size="30" data-state="resting" data-onnight="1"></div>
+        <span class="name">Lune</span>
+        <span class="pb only-desk">powered by Elio</span>
+      </div>
+      <button class="hdr-cta only-desk" type="button" id="hdrCta">Claim a free build →</button>
+    </header>
+
+    <main class="main">
+      <section class="narrative">
+        <h1 class="h1">What you've always wanted. <span class="gold">Built in days.</span></h1>
+
+        <p class="explainer only-desk">The small tool you've always wished for — built for you, live and ready to use.</p>
+        <p class="explainer only-mob">Describe a daily headache. Get a working tool back in days.</p>
+
+        <p class="desc only-desk">You've got a daily headache you've always wished a tool could fix. Describe it — we build it and hand it back, live and working, in days.</p>
+        <p class="desc only-mob">You've got a daily headache you've always wished a tool could fix.</p>
+
+        <div class="offer only-desk">
+          <div class="ttl">We're building 5 tools for free.</div>
+          <div class="sub">Tell us the daily pain you'd love to kill. If it's a fit, you could be one of the five — no cost, no catch.</div>
+        </div>
+
+        <div class="trust only-desk">
+          <div class="row"><span class="tick">✓</span><div class="txt"><b>Done for you</b> — you describe it, we build it</div></div>
+          <div class="row"><span class="tick">✓</span><div class="txt"><b>In days</b> — not months</div></div>
+          <div class="row"><span class="tick">✓</span><div class="txt"><b>Really works</b> — live, not a demo</div></div>
+        </div>
+      </section>
+
+      <section class="formwrap" id="formSection">
+        <div class="card">
+          <div class="ribbon only-mob"><span><b>We're building 5 tools for free</b> — tell us what to build.</span></div>
+
+          <div class="card-pad" id="formPanel">
+            <div class="kicker only-desk">Claim your free build</div>
+            <div class="cardttl only-desk">Tell us what to build.</div>
+
+            <div class="fields">
+              <div class="field">
+                <label for="nameInput">Name</label>
+                <input id="nameInput" type="text" placeholder="Your name" autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="emailInput">Email</label>
+                <input id="emailInput" type="email" placeholder="you@work.com" autocomplete="email">
+              </div>
+              <div class="field">
+                <div class="lblrow"><label for="ideaInput">What would you build?</label><span class="opt">optional</span></div>
+                <textarea id="ideaInput" rows="3" placeholder="The daily task or headache you wish a tool could handle…"></textarea>
+              </div>
+            </div>
+
+            <div class="nudge" id="nudge"><span class="dot"></span><span class="msg" id="nudgeMsg"></span></div>
+
+            <div class="cta"><button class="btn-gold" type="button" id="submitBtn">Claim a free build →</button></div>
+
+            <p class="microcopy">No spam. Picked for a pilot, we reach out personally — either way, you'll hear from us very soon.</p>
+          </div>
+
+          <div class="card-pad confirm" id="confirmPanel">
+            <div class="moonbox" data-moon data-size="72" data-state="thinking"></div>
+            <div class="ttl">You're on the list.</div>
+            <p class="p1">If your idea fits one of the 5 free pilots, you'll hear from us first.</p>
+            <p class="p2">Not picked? You won't wait long — Lune opens to everyone very soon, and you're already at the front of the line.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="proofrow only-mob">
+        <span class="pi">Done for you</span><span class="sep">·</span>
+        <span class="pi">In days</span><span class="sep">·</span>
+        <span class="pi">Really works</span>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <div class="fbrand">
+        <div class="only-desk" data-moon data-size="22" data-state="resting" data-onnight="1"></div>
+        <span class="fname">Lune</span>
+        <span class="fpb">powered by Elio</span>
+      </div>
+      <span class="ftrust">Built by real people. Your idea stays yours.</span>
+      <span class="fcopy">© 2026 Lune</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+// ---- where signups go (FormSubmit — free, emails tuananhtrinh919@gmail.com) ----
+var FORM_ENDPOINT = 'https://formsubmit.co/ajax/tuananhtrinh919@gmail.com';
+
+// ---- Moon: faithful recreation of the Lune design-system component ----
+function el(tag, css){ var e=document.createElement(tag); if(css) e.style.cssText=css; return e; }
+function buildMoon(size, state, onNight){
+  state = state || 'awake';
+  var scale = size/120, animated = state!=='resting';
+  var glow = state==='thinking'?0.5:(state==='awake'?0.32:0.18);
+  var spread = (state==='thinking'?30:(state==='awake'?24:16)) + (onNight?4:0);
+  var glowDur = state==='thinking'?'2.8s':'6s';
+  var spinDur = state==='thinking'?'6s':'60s';
+  var GAP=28, lineA=function(v){return '1.1px solid rgba(196,178,170,'+v+')';};
+  var root = el('div','position:relative;width:'+size+'px;height:'+size+'px;flex-shrink:0;');
+  root.appendChild(el('div','position:absolute;top:0;left:0;width:120px;height:120px;transform:scale('+scale+');transform-origin:top left;pointer-events:none;border-radius:50%;box-shadow:0 0 '+spread+'px '+(spread-8)+'px rgba(168,150,150,'+glow+');'+(animated?'animation:luneMoonGlow '+glowDur+' ease-in-out infinite;':'')));
+  root.lastChild.className='lune-moon-glow';
+  var body = el('div','position:absolute;top:0;left:0;width:120px;height:120px;transform:scale('+scale+');transform-origin:top left;');
+  var clip = el('div','position:absolute;inset:0;border-radius:50%;overflow:hidden;border:1.3px solid rgba(170,166,180,.32);');
+  clip.appendChild(el('div','position:absolute;inset:0;background:radial-gradient(circle at 20% 36%, #fff4e8 0%, #ecdcc8 40%, #c9c3cf 78%, #aeb0c8 100%);'));
+  clip.appendChild(el('div','position:absolute;left:9%;top:24%;width:22px;height:30px;border-radius:50%;background:radial-gradient(circle, rgba(255,255,255,.7), transparent 70%);filter:blur(2px);'));
+  clip.appendChild(el('div','position:absolute;top:0;left:'+GAP+'px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 64% 42%, #27263c 0%, #15131f 68%, #0e0c14 100%);filter:blur(5px);'));
+  var persp = el('div','position:absolute;inset:0;perspective:440px;');
+  var tilt = el('div','position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(24deg) rotateZ(-19deg);');
+  var spin = el('div','position:absolute;inset:0;transform-style:preserve-3d;'+(animated?'animation:luneMoonSpin '+spinDur+' linear infinite;':''));
+  spin.className='lune-moon-spin';
+  [0,45,90,135].forEach(function(deg,i){ spin.appendChild(el('div','position:absolute;inset:0;border:'+lineA(i===0||i===3?'.42':'.34')+';border-radius:50%;transform:rotateY('+deg+'deg);')); });
+  spin.appendChild(el('div','position:absolute;inset:0;border:'+lineA('.56')+';border-radius:50%;transform:rotateX(90deg);'));
+  spin.appendChild(el('div','position:absolute;inset:0;border:'+lineA('.26')+';border-radius:50%;transform:rotateX(90deg) translateZ(30px) scale(.866);'));
+  spin.appendChild(el('div','position:absolute;inset:0;border:'+lineA('.58')+';border-radius:50%;transform:rotateX(90deg) translateZ(-30px) scale(.866);'));
+  spin.appendChild(el('div','position:absolute;inset:0;border:'+lineA('.18')+';border-radius:50%;transform:rotateX(90deg) translateZ(52px) scale(.5);'));
+  spin.appendChild(el('div','position:absolute;inset:0;border:'+lineA('.5')+';border-radius:50%;transform:rotateX(90deg) translateZ(-52px) scale(.5);'));
+  tilt.appendChild(spin); persp.appendChild(tilt); clip.appendChild(persp); body.appendChild(clip);
+  body.appendChild(el('div','position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 6px 0 12px -2px rgba(250,238,228,.92);'));
+  root.appendChild(body);
+  return root;
+}
+document.querySelectorAll('[data-moon]').forEach(function(m){
+  m.appendChild(buildMoon(parseInt(m.dataset.size,10), m.dataset.state, m.dataset.onnight==='1'));
+});
+
+// ---- scroll to form (desktop CTA) ----
+function goToForm(){
+  var el = document.getElementById('nameInput');
+  if(!el) return;
+  var top = el.getBoundingClientRect().top + window.scrollY - 110;
+  window.scrollTo({top:Math.max(0,top), behavior:'smooth'});
+  setTimeout(function(){ el.focus(); }, 360);
+}
+document.getElementById('hdrCta').addEventListener('click', goToForm);
+
+// ---- form submit ----
+var nameI=document.getElementById('nameInput'), emailI=document.getElementById('emailInput'), ideaI=document.getElementById('ideaInput');
+var nudge=document.getElementById('nudge'), nudgeMsg=document.getElementById('nudgeMsg'), btn=document.getElementById('submitBtn');
+function clearNudge(){ nudge.style.display='none'; }
+nameI.addEventListener('input', clearNudge); emailI.addEventListener('input', clearNudge);
+function showNudge(msg){ nudgeMsg.textContent=msg; nudge.style.display='flex'; }
+
+function joined(){
+  document.getElementById('formPanel').style.display='none';
+  var ribbon=document.querySelector('.ribbon'); if(ribbon) ribbon.style.display='none';
+  document.getElementById('confirmPanel').style.display='block';
+  var fs=document.getElementById('formSection');
+  fs.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+btn.addEventListener('click', function(){
+  var n=nameI.value.trim(), em=emailI.value.trim(), idea=ideaI.value.trim();
+  if(!n){ showNudge("A name first — so I know who I'm building for."); nameI.focus(); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ showNudge("I'll need an email I can actually reach you at."); emailI.focus(); return; }
+  clearNudge();
+  btn.disabled=true; btn.textContent='Sending…';
+  // local backup so nothing is lost in-session
+  try{ var arr=JSON.parse(localStorage.getItem('lune_signups')||'[]'); arr.push({name:n,email:em,idea:idea,at:new Date().toISOString()}); localStorage.setItem('lune_signups', JSON.stringify(arr)); }catch(e){}
+  fetch(FORM_ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+    body:JSON.stringify({ Name:n, Email:em, "What to build":idea||'(not specified)', _subject:'🌙 New Lune waitlist signup', _template:'table', _captcha:'false' })
+  }).then(function(){ joined(); }).catch(function(){ joined(); });
+});
+</script>
+</body>
+</html>
